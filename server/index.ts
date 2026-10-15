@@ -157,11 +157,36 @@ async function main() {
         if (!u) throw Error("Unauthorized");
         return u;
       };
-      if (path === "/api/me")
+      if (path === "/api/me") {
+        let current = u;
+        if (!current) {
+          rate("workspace:" + req.socket.remoteAddress, 90);
+          current = {
+            id: randomBytes(16).toString("hex"),
+            email: "",
+            role: "teacher",
+            guest: true,
+          };
+          const token = randomBytes(32).toString("base64url");
+          await store.put("auth", hash(token), {
+            user: current,
+            expires: Date.now() + 30 * 86400000,
+          });
+          res.setHeader(
+            "Set-Cookie",
+            `ebg=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000${process.env.NODE_ENV === "production" ? "; Secure" : ""}`,
+          );
+        }
         return send({
-          user: u ? { id: u.id, email: u.email, role: u.role } : null,
+          user: {
+            id: current.id,
+            email: current.email,
+            role: current.role,
+            guest: !!current.guest,
+          },
           local: !process.env.SUPABASE_URL,
         });
+      }
       if (path === "/api/login" && req.method === "POST") {
         rate("login:" + req.socket.remoteAddress, 10);
         const b = z

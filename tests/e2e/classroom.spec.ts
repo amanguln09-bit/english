@@ -12,10 +12,11 @@ const env = Object.fromEntries(
 );
 test("teacher, phone, board and results", async ({ browser, page }) => {
   await page.goto("/login");
-  await page.getByLabel("Email", { exact: true }).fill(env.LOCAL_ADMIN_EMAIL);
-  await page.locator("input[type=password]").fill(env.LOCAL_ADMIN_PASSWORD);
-  await page.getByRole("button", { name: "Кіру", exact: true }).click();
   await expect(page).toHaveURL(/dashboard/);
+  await expect(
+    page.getByRole("heading", { name: "Бүгін не үйренеміз?" }),
+  ).toBeVisible();
+  await expect(page.locator("input[type=password]")).toHaveCount(0);
   await page.goto("/games/word-race");
   await page.getByRole("button", { name: "Сессия құру" }).click();
   await expect(page).toHaveURL(/sessions\/.*\/host/);
@@ -249,5 +250,48 @@ test("personal copy, admin approval and teacher role boundaries", async ({
     ).toBe(403);
   } finally {
     await teacher.dispose();
+  }
+});
+
+test("passwordless workspaces keep private sessions and copies isolated", async ({
+  playwright,
+}) => {
+  const first = await playwright.request.newContext({
+    baseURL: "http://127.0.0.1:3000",
+  });
+  const second = await playwright.request.newContext({
+    baseURL: "http://127.0.0.1:3000",
+  });
+  try {
+    const a = await (await first.get("/api/me")).json();
+    const b = await (await second.get("/api/me")).json();
+    expect(a.user.guest).toBe(true);
+    expect(a.user.role).toBe("teacher");
+    expect(a.user.id).not.toBe(b.user.id);
+    const again = await (await first.get("/api/me")).json();
+    expect(again.user.id).toBe(a.user.id);
+    expect((await first.get("/api/admin")).status()).toBe(403);
+    const copy = await (
+      await first.post("/api/games/word-race/copy", { data: {} })
+    ).json();
+    expect((await second.get("/api/games/" + copy.id)).status()).toBe(403);
+    const created = await (
+      await first.post("/api/sessions", {
+        data: { gameId: "word-race", duration: 180, feedback: "teacher" },
+      })
+    ).json();
+    expect((await second.get("/api/sessions/" + created.id)).status()).toBe(
+      401,
+    );
+    expect(
+      (
+        await second.post("/api/sessions/" + created.id + "/command", {
+          data: { action: "start" },
+        })
+      ).status(),
+    ).toBe(401);
+  } finally {
+    await first.dispose();
+    await second.dispose();
   }
 });

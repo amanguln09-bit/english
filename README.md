@@ -14,13 +14,13 @@ bash scripts/setup.sh
 npm run dev
 ```
 
-Setup preserves an existing .env.local. A new one receives a randomly generated local admin password and `teacher@example.test`; read that private file locally to sign in. No fixed/default password is committed or displayed in the interface. The setup does not create a Supabase account. Never share that file or commit it. For SQLite fallback leave DATABASE_URL unset; local data lives in `.local/brain-games.sqlite`. Node's SQLite API is experimental. Production requires PostgreSQL unless ALLOW_LOCAL_DEMO is explicitly set for a local smoke test.
+The teacher workspace opens immediately without registration, login or password. Each browser receives its own random HttpOnly workspace cookie valid for 30 days; other browsers cannot control its sessions or edit its private copies. Clearing cookies or changing devices does not recover that workspace. `/login` redirects to `/dashboard`. Administration remains separate at `/admin/login`. Setup preserves an existing .env.local; a new one receives optional private administrator credentials. Those credentials are not needed to play or host. The setup does not create a Supabase account. Never share or commit the private environment file. For SQLite fallback leave DATABASE_URL unset; local data lives in `.local/brain-games.sqlite`. Node's SQLite API is experimental. Production requires PostgreSQL unless ALLOW_LOCAL_DEMO is explicitly set for a local smoke test.
 
 For PostgreSQL, set DATABASE_URL in the private environment and run `npm run db:migrate`. Then use `npm run dev`. See `.env.example`. Set PUBLIC_ORIGIN when phones must connect from another device. Server listens on port 3000 by default. HTTPS is mandatory outside local development.
 
 ## Classroom workflow
 
-1. Sign in. Open Games, choose a sample and inspect its answer key.
+1. Open Games directly, choose a sample and inspect its answer key. No teacher password is required.
 2. Select 3–7 minutes and immediate or teacher-controlled feedback; launch a session.
 3. Open the board, show its PIN/QR. Learners enter a nickname on Join without an account.
 4. Start, pause/resume, reveal, advance questions, finish. The timer covers the whole game.

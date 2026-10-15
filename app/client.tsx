@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { GameArtwork, QuestionArtwork } from "./components/game-artwork";
-type User = { id: string; email: string; role: string };
+type User = { id: string; email: string; role: string; guest?: boolean };
 type G = {
   id: string;
   title: string;
@@ -187,6 +187,9 @@ export default function Client() {
     };
   }, [sessionId, role, ready]);
   useEffect(() => C([]), [snapshot?.index]);
+  useEffect(() => {
+    if (path === "/login") location.replace("/dashboard");
+  }, [path]);
   const start = async (id: string) => {
     const s = await api("/sessions", { gameId: id, duration, feedback });
     location.href = `/sessions/${s.id}/host`;
@@ -199,16 +202,16 @@ export default function Client() {
   else if (protectedPage && !me)
     content = (
       <section className="card narrow">
-        <h1>{t("Мұғалім ретінде кіру", "Teacher sign in")}</h1>
+        <h1>{t("Кабинетті ашу", "Open workspace")}</h1>
         <p>
           {t(
-            "Бұл бетке кіру үшін тіркелгі қажет.",
-            "Sign in to access this page.",
+            "Кабинет ашылмады. Қайта жүктеп көріңіз.",
+            "The workspace could not be opened. Please reload.",
           )}
         </p>
-        <a className="button" href="/login">
-          {t("Кіру", "Sign in")}
-        </a>
+        <button onClick={() => location.reload()}>
+          {t("Қайталау", "Retry")}
+        </button>
       </section>
     );
   else if (path === "/")
@@ -308,17 +311,21 @@ export default function Client() {
     );
   else if (path === "/login")
     content = (
+      <p role="status">{t("Кабинет ашылуда…", "Opening workspace…")}</p>
+    );
+  else if (path === "/admin/login")
+    content = (
       <form
         className="card narrow stack"
         onSubmit={(e) => {
           e.preventDefault();
           act(async () => {
             await api("/login", { email, password });
-            location.href = "/dashboard";
+            location.href = "/admin";
           });
         }}
       >
-        <span className="eyebrow">Teacher workspace</span>
+        <span className="eyebrow">Admin</span>
         <h1>{t("Қош келдіңіз", "Welcome back")}</h1>
         <label>
           Email
@@ -343,8 +350,8 @@ export default function Client() {
         <button disabled={busy}>{t("Кіру", "Sign in")}</button>
         <p className="small muted">
           {t(
-            "Тіркелгіні әкімші береді. Жергілікті орта үшін README нұсқаулығын қараңыз.",
-            "Accounts are provisioned by your administrator. See README for local setup.",
+            "Бұл кіру тек әкімшіге арналған. Мұғалім кабинетіне құпиясөз қажет емес.",
+            "This sign-in is only for administrators. The teacher workspace needs no password.",
           )}
         </p>
       </form>
@@ -1054,6 +1061,11 @@ export default function Client() {
       ) : (
         <div className="error">
           {t("Тек әкімшіге рұқсат етіледі.", "Administrator access required.")}
+          <p>
+            <a className="button" href="/admin/login">
+              {t("Әкімші ретінде кіру", "Administrator sign in")}
+            </a>
+          </p>
         </div>
       );
   else
@@ -1085,7 +1097,7 @@ export default function Client() {
           >
             {lang === "kk" ? "EN" : "ҚАЗ"}
           </button>
-          {me ? (
+          {me && !me.guest ? (
             <button
               className="secondary"
               onClick={() =>
@@ -1097,9 +1109,7 @@ export default function Client() {
             >
               {t("Шығу", "Sign out")}
             </button>
-          ) : (
-            <a href="/login">{t("Кіру", "Sign in")}</a>
-          )}
+          ) : null}
         </nav>
       </header>
       <main>

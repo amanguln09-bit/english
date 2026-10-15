@@ -5,6 +5,7 @@ export type User = {
   id: string;
   email: string;
   role: "teacher" | "admin";
+  guest?: boolean;
   salt?: string;
   password?: string;
 };

@@ -6,9 +6,9 @@ Use Node 24 and PostgreSQL 17. Run exactly one Node application instance. A TLS 
 
 1. Provision a PostgreSQL database in an approved region; configure server-only DATABASE_URL with verified TLS. Do not disable certificate validation.
 2. `npm ci`, then `npm run db:migrate`. Migration runner records applied versions; first migrations must be run against an empty application schema. Do not manually run an applied migration a second time.
-3. Set SUPABASE_URL and SUPABASE_ANON_KEY for the school tenant. Provision teachers, disable open signup and set trusted admin app_metadata. The app's local administrator provisioning is not the hosted Supabase administration API.
+3. Teachers use browser-bound passwordless workspaces by default. For optional administrator access, set SUPABASE_URL and SUPABASE_ANON_KEY for the school tenant. Provision teachers, disable open signup and set trusted admin app_metadata. The app's local administrator provisioning is not the hosted Supabase administration API.
 4. `npm run build`, then `npm start`. Keep `.env.local` private or use your hosting secret manager. Both scripts accept process environment; the server also reads an optional .env.local.
-5. Verify login, a private draft, PIN joining, teacher authorization, timed game, WebSocket reconnection and CSV on the actual host before a classroom trial.
+5. Verify passwordless workspace creation, optional admin login, a private draft, PIN joining, teacher authorization, timed game, WebSocket reconnection and CSV on the actual host before a classroom trial.
 
 `Dockerfile` packages the Next/custom Node server. `compose.yaml` provisions a local PostgreSQL database using an operator-supplied password; use `docker compose --env-file .env.local up -d db` after adding POSTGRES_PASSWORD. Generate a matching DATABASE_URL yourself without committing either value. The onboarding instance used a separate `ebg-postgres` test container. Container image build/deployment to a public registry has not been performed.
 
