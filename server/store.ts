@@ -1,4 +1,3 @@
-import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { Pool } from "pg";
 import type { GameData } from "../lib/content";
@@ -9,9 +8,43 @@ export interface Store {
   put(kind: string, id: string, value: unknown): Promise<void>;
   remove(kind: string, id: string): Promise<void>;
 }
+let pool: Pool | undefined;
+let lockPool: Pool | undefined;
+function databasePool() {
+  return (pool ??= new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 5,
+    connectionTimeoutMillis: 10000,
+    idleTimeoutMillis: 10000,
+  }));
+}
+/** PostgreSQL serializes short HTTP mutations across independent serverless instances. */
+export async function withDatabaseLock<T>(fn: () => Promise<T>): Promise<T> {
+  lockPool ??= new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 1,
+    connectionTimeoutMillis: 30000,
+    idleTimeoutMillis: 10000,
+  });
+  const db = await lockPool.connect();
+  try {
+    await db.query("BEGIN");
+    await db.query(
+      "SELECT pg_advisory_xact_lock(hashtext('ebg_serverless_api'))",
+    );
+    const result = await fn();
+    await db.query("COMMIT");
+    return result;
+  } catch (e) {
+    await db.query("ROLLBACK");
+    throw e;
+  } finally {
+    db.release();
+  }
+}
 export async function createStore(): Promise<Store> {
   if (process.env.DATABASE_URL) {
-    const p = new Pool({ connectionString: process.env.DATABASE_URL });
+    const p = databasePool();
     await p.query("SELECT 1");
     return {
       async get<T>(k: string, id: string) {
@@ -125,6 +158,7 @@ export async function createStore(): Promise<Store> {
   if (process.env.NODE_ENV === "production" && !process.env.ALLOW_LOCAL_DEMO)
     throw Error("DATABASE_URL required in production");
   mkdirSync(".local", { recursive: true });
+  const { DatabaseSync } = await import("node:sqlite");
   const db = new DatabaseSync(
     process.env.LOCAL_DB || ".local/brain-games.sqlite",
   );

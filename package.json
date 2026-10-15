@@ -14,7 +14,10 @@
     "data:prune": "node --env-file-if-exists=.env.local --import tsx scripts/prune.ts",
     "worker:build": "mkdir -p .local/config && XDG_CONFIG_HOME=\"$PWD/.local/config\" WRANGLER_SEND_METRICS=false wrangler deploy --dry-run --config cloudflare/wrangler.toml --outdir .local/worker-build",
     "worker:check": "tsc -p cloudflare/tsconfig.json",
-    "pretest": "npm run worker:build"
+    "pretest": "npm run worker:build",
+    "start:vercel": "next start",
+    "vercel-build": "node --env-file-if-exists=.env.local --import tsx scripts/vercel-build.ts",
+    "test:serverless": "tsx scripts/verify-serverless.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
@@ -44,5 +47,8 @@
     "typescript": "^5.9.0",
     "vitest": "^3.2.0",
     "wrangler": "^4.151.0"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

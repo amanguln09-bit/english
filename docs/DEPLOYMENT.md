@@ -2,7 +2,7 @@
 
 ## Supported baseline
 
-Use Node 24 and PostgreSQL 17. Run exactly one Node application instance. A TLS reverse proxy must forward HTTP and WebSocket upgrades on `/realtime`, preserve Host/Origin and enforce request limits. Set PUBLIC_ORIGIN to the externally reachable HTTPS origin before creating QR codes. Loopback PIN tests do not prove that phones can reach your deployment.
+Use Node 24 and PostgreSQL 17. For Vercel, follow [VERCEL.md](VERCEL.md): Next HTTP API routes share PostgreSQL state and use authenticated polling or an external relay. The remainder of this baseline section describes the custom Node server; run exactly one custom Node application instance. Do not write to one database from both transport modes simultaneously. A TLS reverse proxy must forward HTTP and WebSocket upgrades on `/realtime`, preserve Host/Origin and enforce request limits. Set PUBLIC_ORIGIN to the externally reachable HTTPS origin before creating QR codes. Loopback PIN tests do not prove that phones can reach your deployment.
 
 1. Provision a PostgreSQL database in an approved region; configure server-only DATABASE_URL with verified TLS. Do not disable certificate validation.
 2. `npm ci`, then `npm run db:migrate`. Migration runner records applied versions; first migrations must be run against an empty application schema. Do not manually run an applied migration a second time.

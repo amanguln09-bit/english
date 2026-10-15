@@ -18,7 +18,7 @@ Registry metadata and the lockfile establish the actually installed versions. No
 
 Reference documentation (links for operator review; not all remotely retrieved in this environment):
 
-- https://nextjs.org/docs/app/guides/custom-server — custom Node server requires a long-running host; this build is not a static Cloudflare Pages export or ordinary Vercel serverless function.
+- https://nextjs.org/docs/app/guides/custom-server — the custom Node WebSocket mode requires a long-running host. A later adapter adds Next HTTP routes for Vercel using shared PostgreSQL and polling; see VERCEL.md. Neither mode is a static site export.
 - https://supabase.com/docs/guides/auth — password login adapter; server-side role comes from app_metadata, not user-editable user_metadata. No Supabase tenant/credentials supplied, so actual hosted login is unverified.
 - https://developers.cloudflare.com/durable-objects/ — optional hibernating WebSocket relay with SQLite Durable Objects. The room transport is tested in local workerd. It does not move the authoritative game engine into Durable Objects.
 - https://developers.cloudflare.com/workers/platform/pricing/ and https://supabase.com/pricing — verify current plans before purchase; live pricing was not independently verified.
@@ -29,7 +29,7 @@ Main package license families are MIT (Next, React, Tailwind, Zod, ws, qrcode, p
 
 ## Hosting and security decisions
 
-The verified baseline runs one authoritative Node process with PostgreSQL snapshots in runtime_records. Normalized educational import tables coexist with it. Games, questions, sessions, participants, answers and audit events are also projected into normalized tables in the same PostgreSQL transaction; restart recovery reads session snapshots. Single-process serialization prevents double scoring; do not run multiple Node replicas against one DB without distributed ownership/transactions.
+The original custom-server baseline runs one authoritative Node process with PostgreSQL snapshots in runtime_records. The later Vercel HTTP adapter serializes requests using a PostgreSQL advisory transaction lock and reloads shared state per request. Normalized educational import tables coexist with it. Games, questions, sessions, participants, answers and audit events are also projected into normalized tables in the same PostgreSQL transaction; restart recovery reads session snapshots. Single-process serialization protects the custom Node mode; the Vercel HTTP mode adds a shared PostgreSQL transaction lock. Do not mix those modes as simultaneous writers.
 
 Local Auth uses random salted scrypt hashes and HttpOnly session cookies; it is a development fallback. Supabase password login is wired but requires a configured tenant. Disable public self-signup and provision teachers. Admins require trusted `app_metadata.role=admin`. Production DB credentials are server-only. Every schema table has RLS enabled with no anonymous grants. Database-owner connections bypass RLS, so server authorization remains essential; use a dedicated least-privilege role and verify its deployment grants. Do not expose runtime_records to clients.
 

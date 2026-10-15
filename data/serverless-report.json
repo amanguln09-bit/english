@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-10-15T19:55:07.282Z",
+  "conditions": "Two separate next start processes sharing PostgreSQL 17 on loopback. Not a deployed Vercel or WAN test.",
+  "instanceCount": 2,
+  "sharedSession": true,
+  "sharedOwnership": true,
+  "concurrentDuplicateStatuses": [
+    200,
+    400
+  ],
+  "score": 100,
+  "errors": []
+}

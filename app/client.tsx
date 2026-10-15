@@ -26,6 +26,10 @@ async function api(path: string, body?: unknown, token?: string) {
     },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
+  if (!r.headers.get("content-type")?.includes("application/json"))
+    throw Error(
+      "Сервер API орнына веб-бет қайтарды. Жарияланған нұсқаны және сервер баптауларын тексеріңіз.",
+    );
   const data = await r.json();
   if (!r.ok) throw Error(data.error || "Request failed");
   return data;
@@ -133,19 +137,24 @@ export default function Client() {
     const receive = (v: any) => {
       V(v);
       Recv(Date.now());
+      Conn(true);
+      E("");
     };
     const connect = async () => {
       let relay: string | null = null;
+      let realtimeTransport = "websocket";
       try {
-        relay = (
-          await api(
-            `/sessions/${sessionId}/realtime?role=${role}`,
-            undefined,
-            token,
-          )
-        ).url;
+        const connection = await api(
+          `/sessions/${sessionId}/realtime?role=${role}`,
+          undefined,
+          token,
+        );
+        relay = connection.url;
+        realtimeTransport = connection.transport;
       } catch {}
       if (stopped) return;
+      // Vercel uses authenticated polling when an external WebSocket relay is absent.
+      if (!relay && realtimeTransport === "polling") return;
       ws = new WebSocket(
         relay ||
           `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/realtime`,
@@ -171,7 +180,10 @@ export default function Client() {
     const poll = setInterval(() => {
       api(`/sessions/${sessionId}?role=${role}`, undefined, token)
         .then(receive)
-        .catch((e) => E(e.message));
+        .catch((e) => {
+          Conn(false);
+          E(e.message);
+        });
     }, 3000);
     const tick = setInterval(() => Now(Date.now()), 250);
     if (role === "host")

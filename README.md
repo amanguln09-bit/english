@@ -4,6 +4,10 @@ Working classroom game application for grades 6–8: teacher control, phone part
 
 **Status:** functional local implementation; not a completed production release or fully verified Kazakhstan curriculum. Read [research audit](docs/RESEARCH.md), [deployment](docs/DEPLOYMENT.md) and [implementation report](docs/IMPLEMENTATION.md) before use with real students.
 
+## Vercel
+
+See [Vercel setup and the HTML/JSON API fix](docs/VERCEL.md). Next.js HTTP routes now support Vercel with a PostgreSQL DATABASE_URL; the build applies migrations automatically when configured. No native WebSocket server runs inside a Vercel function: an optional Cloudflare relay or authenticated 3-second polling provides session updates. Missing database configuration returns a clear JSON 503 error. Teacher access stays passwordless.
+
 ## Run locally
 
 Requirements: Node 24, npm. PostgreSQL 17 recommended; Docker optional. System Chromium or another Playwright-supported installation for browser tests.

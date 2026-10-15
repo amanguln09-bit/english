@@ -91,44 +91,46 @@ test("30 concurrent learners: joins, live delivery, answers, reconnect, export",
       return { ...(await r.json()), joinMs: performance.now() - t };
     }),
   );
+  const polling = process.env.E2E_TRANSPORT === "polling";
   const sockets: WebSocket[] = [];
   let disconnects = 0;
   const deliveries: number[] = [];
   let sentAt = 0;
-  await Promise.all(
-    joins.map(
-      (j) =>
-        new Promise<void>((resolve, reject) => {
-          const ws = new WebSocket("ws://127.0.0.1:3000/realtime", {
-            origin: "http://127.0.0.1:3000",
-            handshakeTimeout: 5000,
-          });
-          sockets.push(ws);
-          ws.on("open", () =>
-            ws.send(JSON.stringify({ id, role: "student", token: j.token })),
-          );
-          let initialized = false,
-            delivered = false;
-          ws.on("message", (data) => {
-            const v = JSON.parse(data.toString());
-            if (!initialized) {
-              initialized = true;
-              resolve();
-            }
-            if (v.state === "ACTIVE" && !delivered && sentAt) {
-              deliveries.push(performance.now() - sentAt);
-              delivered = true;
-            }
-          });
-          ws.on("error", reject);
-          ws.on("close", () => {
-            disconnects++;
-            if (!initialized)
-              reject(Error("WebSocket closed before authentication"));
-          });
-        }),
-    ),
-  );
+  if (!polling)
+    await Promise.all(
+      joins.map(
+        (j) =>
+          new Promise<void>((resolve, reject) => {
+            const ws = new WebSocket("ws://127.0.0.1:3000/realtime", {
+              origin: "http://127.0.0.1:3000",
+              handshakeTimeout: 5000,
+            });
+            sockets.push(ws);
+            ws.on("open", () =>
+              ws.send(JSON.stringify({ id, role: "student", token: j.token })),
+            );
+            let initialized = false,
+              delivered = false;
+            ws.on("message", (data) => {
+              const v = JSON.parse(data.toString());
+              if (!initialized) {
+                initialized = true;
+                resolve();
+              }
+              if (v.state === "ACTIVE" && !delivered && sentAt) {
+                deliveries.push(performance.now() - sentAt);
+                delivered = true;
+              }
+            });
+            ws.on("error", reject);
+            ws.on("close", () => {
+              disconnects++;
+              if (!initialized)
+                reject(Error("WebSocket closed before authentication"));
+            });
+          }),
+      ),
+    );
   sentAt = performance.now();
   expect(
     (
@@ -137,6 +139,17 @@ test("30 concurrent learners: joins, live delivery, answers, reconnect, export",
       })
     ).ok(),
   ).toBeTruthy();
+  if (polling)
+    await Promise.all(
+      joins.map(async (j) => {
+        const response = await request.get(`/api/sessions/${id}`, {
+          headers: { Authorization: "Bearer " + j.token },
+        });
+        expect(response.ok()).toBeTruthy();
+        expect((await response.json()).state).toBe("ACTIVE");
+        deliveries.push(performance.now() - sentAt);
+      }),
+    );
   const answerMs = await Promise.all(
     joins.map(async (j) => {
       const t = performance.now();
@@ -168,8 +181,10 @@ test("30 concurrent learners: joins, live delivery, answers, reconnect, export",
   expect(errors).toEqual([]);
   const report = {
     timestamp: new Date().toISOString(),
-    conditions:
-      "One Node process, PostgreSQL 17 Docker, loopback network; 30 WebSocket/API learners, one teacher. Not a physical classroom or WAN test.",
+    conditions: polling
+      ? "Next standalone HTTP routes, PostgreSQL 17 Docker, loopback network; 30 concurrent authenticated HTTP learners, one teacher. Delivery timings exclude the UI polling interval. No native WebSocket or WAN claim."
+      : "One Node process, PostgreSQL 17 Docker, loopback network; 30 WebSocket/API learners, one teacher. Not a physical classroom or WAN test.",
+    transport: polling ? "polling" : "websocket",
     learners: 30,
     deliveryMs: deliveries,
     joinMs: joins.map((j) => j.joinMs),
@@ -177,7 +192,12 @@ test("30 concurrent learners: joins, live delivery, answers, reconnect, export",
     errors,
     unexpectedDisconnects: disconnects,
   };
-  writeFileSync("data/classroom-report.json", JSON.stringify(report, null, 2));
+  writeFileSync(
+    polling
+      ? "data/classroom-polling-report.json"
+      : "data/classroom-report.json",
+    JSON.stringify(report, null, 2),
+  );
   sockets.forEach((s) => s.close());
 });
 test("public APIs hide private material and reject unauthenticated access", async ({
