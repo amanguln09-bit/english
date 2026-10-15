@@ -1,0 +1,102 @@
+[
+  {
+    "file": "01-home.png",
+    "label": "Басты бет",
+    "route": "/"
+  },
+  {
+    "file": "02-login.png",
+    "label": "Кіру",
+    "route": "/login"
+  },
+  {
+    "file": "09-join.png",
+    "label": "Ойынға қосылу",
+    "route": "/join"
+  },
+  {
+    "file": "03-dashboard.png",
+    "label": "Мұғалім кабинеті",
+    "route": "/dashboard"
+  },
+  {
+    "file": "04-curriculum.png",
+    "label": "Оқу бағдарламасы",
+    "route": "/curriculum"
+  },
+  {
+    "file": "05-topic.png",
+    "label": "Тақырып пен ойындар",
+    "route": "/topics/word-race"
+  },
+  {
+    "file": "06-game.png",
+    "label": "Ойынды қарау",
+    "route": "/games/word-race"
+  },
+  {
+    "file": "12-admin.png",
+    "label": "Әкімші панелі",
+    "route": "/admin"
+  },
+  {
+    "file": "07-host-lobby.png",
+    "label": "Мұғалім: күту бөлмесі",
+    "route": "/sessions/[id]/host"
+  },
+  {
+    "file": "07-host.png",
+    "label": "Мұғалім: ойынды басқару",
+    "route": "/sessions/[id]/host"
+  },
+  {
+    "file": "08-display.png",
+    "label": "Интерактивті тақта",
+    "route": "/sessions/[id]/display"
+  },
+  {
+    "file": "10-play.png",
+    "label": "Оқушының телефон экраны",
+    "route": "/play/[sessionId]"
+  },
+  {
+    "file": "10-play-feedback.png",
+    "label": "Оқушы: жауап нәтижесі",
+    "route": "/play/[sessionId]"
+  },
+  {
+    "file": "11-results.png",
+    "label": "Ойын нәтижелері",
+    "route": "/sessions/[id]/results"
+  },
+  {
+    "file": "game-picture.png",
+    "label": "Ойын: picture",
+    "route": "/games/picture"
+  },
+  {
+    "file": "game-odd-one-out.png",
+    "label": "Ойын: odd-one-out",
+    "route": "/games/odd-one-out"
+  },
+  {
+    "file": "game-mystery-box.png",
+    "label": "Ойын: mystery-box",
+    "route": "/games/mystery-box"
+  },
+  {
+    "file": "game-brain-battle.png",
+    "label": "Ойын: brain-battle",
+    "route": "/games/brain-battle"
+  },
+  {
+    "file": "03-dashboard-overview.png",
+    "label": "Жаңартылған ойын карточкалары",
+    "route": "/dashboard"
+  },
+  {
+    "file": "picture-phone.png",
+    "label": "Picture Quest — телефон экраны",
+    "route": "/play/[sessionId]"
+  }
+]

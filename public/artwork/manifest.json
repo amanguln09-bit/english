@@ -1,0 +1,14 @@
+{
+  "createdAt": "2026-10-16",
+  "generator": "GPT Image via image_gen",
+  "purpose": "Original AI-generated artwork for English Brain Games; no official curriculum alignment is implied.",
+  "assets": [
+    {"file":"word-race.png","use":"Word Race cover","description":"Open books, winding tile track and lightning trophy"},
+    {"file":"picture.png","use":"Picture Quest cover","description":"Animal and nature picture frames, camera and magnifier"},
+    {"file":"odd-one-out.png","use":"Odd One Out cover","description":"Neutral geometric puzzle pieces; no scored answer highlighted"},
+    {"file":"mystery-box.png","use":"Mystery Box cover","description":"Glowing blue gift box, compass and blank clue cards"},
+    {"file":"brain-battle.png","use":"Brain Battle cover and landing hero","description":"Lavender brain, book and strategy towers"},
+    {"file":"picture-scene.png","use":"Stock animal-identification question","description":"Single recognizable elephant; question UI uses a neutral accessible description"}
+  ],
+  "delivery": "Next Image optimizes cover illustrations for responsive viewports. Decorative covers have empty alt text; instructional question images retain descriptive non-answer alt text. Existing /elephant.svg references resolve to the generated scene in the renderer without modifying personal game copies or session snapshots. Active scored questions do not display decorative cover art."
+}

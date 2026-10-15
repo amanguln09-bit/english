@@ -1,0 +1,494 @@
+@import "tailwindcss";
+:root {
+  font-family: Arial, sans-serif;
+  color: #172842;
+  background: #f5f7fc;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+button,
+.button {
+  display: inline-block;
+  border: 0;
+  border-radius: 12px;
+  padding: 13px 19px;
+  background: #274ccc;
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+button:hover,
+.button:hover {
+  filter: brightness(0.92);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+button.secondary,
+.button.secondary {
+  background: #e9edfc;
+  color: #243a77;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #bbc5d9;
+  border-radius: 10px;
+  font: inherit;
+  background: white;
+  color: #172842;
+}
+label {
+  display: grid;
+  gap: 7px;
+  font-weight: 600;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 5%;
+  border-bottom: 1px solid #e0e5ef;
+  background: white;
+  gap: 20px;
+}
+nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.brand {
+  font-size: 21px;
+  font-weight: 900;
+}
+.brand span {
+  color: #5367dd;
+}
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 36px 24px;
+}
+h1 {
+  font-size: clamp(30px, 4vw, 52px);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin: 15px 0 22px;
+}
+h2 {
+  font-size: 25px;
+  line-height: 1.3;
+}
+p {
+  line-height: 1.65;
+}
+.muted {
+  color: #65748b;
+}
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #5965c9;
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 50px;
+  padding: 40px 0 60px;
+}
+.hero p {
+  font-size: 19px;
+  max-width: 540px;
+}
+.hero-art {
+  background: #e8e5fb;
+  border-radius: 35px;
+  padding: 36px;
+  transform: rotate(2deg);
+  box-shadow: 0 20px 40px #35447113;
+}
+.hero-art .card {
+  transform: rotate(-2deg);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+.card {
+  background: white;
+  border: 1px solid #e3e8f2;
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 5px 20px #263c7110;
+}
+.card h2 {
+  margin-top: 15px;
+}
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.stack {
+  display: grid;
+  gap: 18px;
+}
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  padding: 6px 10px;
+  background: #edf0ff;
+  color: #4257a5;
+  border-radius: 8px;
+  font-weight: 700;
+}
+.notice {
+  background: #fff5d9;
+  color: #72521b;
+  padding: 15px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin: 20px 0;
+}
+.error {
+  background: #ffebeb;
+  color: #9c2424;
+  padding: 15px;
+  border-radius: 10px;
+}
+.success {
+  background: #def5e9;
+  padding: 18px;
+  border-radius: 12px;
+  color: #126741;
+}
+.icon {
+  font-size: 40px;
+}
+.narrow {
+  max-width: 520px;
+  margin: 35px auto;
+}
+.pin {
+  font-size: clamp(40px, 8vw, 78px);
+  letter-spacing: 9px;
+  font-weight: 900;
+  color: #304cbb;
+}
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+.options button {
+  background: #edf0fd;
+  color: #273b71;
+  min-height: 65px;
+  border: 3px solid transparent;
+}
+.options button.selected {
+  border-color: #3b58cd;
+  background: #dce3ff;
+}
+.display main {
+  max-width: 1500px;
+}
+.display .question {
+  font-size: clamp(28px, 4vw, 58px);
+}
+.display .options button {
+  font-size: 30px;
+  min-height: 100px;
+}
+.question-image {
+  max-height: 220px;
+  margin: auto;
+  display: block;
+}
+.timer {
+  font-size: 30px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.small {
+  font-size: 13px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+td,
+th {
+  text-align: left;
+  padding: 14px;
+  border-bottom: 1px solid #e0e5ef;
+}
+textarea {
+  min-height: 300px;
+  font-family: monospace;
+}
+.footer {
+  margin-top: 50px;
+  padding: 24px;
+  border-top: 1px solid #e0e5ef;
+  color: #65748b;
+}
+.accent {
+  color: #dc6d37;
+}
+.sr-only {
+  position: absolute;
+  left: -10000px;
+}
+@media (max-width: 750px) {
+  header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px 24px;
+  }
+  nav {
+    gap: 12px;
+    font-size: 14px;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 10px;
+    gap: 20px;
+  }
+  .hero-art {
+    padding: 22px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .options {
+    grid-template-columns: 1fr;
+  }
+  main {
+    padding: 25px 18px;
+  }
+  h1 {
+    letter-spacing: -0.7px;
+  }
+  .card {
+    padding: 20px;
+  }
+}
+
+/* GPT Image illustrations: common framing and per-game visual identity. */
+.game-artwork {
+  overflow: hidden;
+  border-radius: 16px;
+  background: #f7f0e7;
+  isolation: isolate;
+}
+.game-artwork img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+}
+.game-card {
+  overflow: hidden;
+  gap: 14px;
+  align-content: start;
+  border-top: 4px solid var(--game-accent, #5367dd);
+}
+.game-card .game-artwork,
+.topic-card .game-artwork {
+  margin: -26px -26px 6px;
+  border-radius: 18px 18px 0 0;
+}
+.game-card .game-artwork img {
+  aspect-ratio: 3/2;
+}
+.game-card h2 {
+  margin: 0;
+  font-size: 25px;
+}
+.game-card p {
+  margin: 0;
+}
+.game-card .button {
+  margin-top: 8px;
+  text-align: center;
+}
+[data-template="word-race"] {
+  --game-accent: #c27708;
+  --game-wash: #fff5db;
+}
+[data-template="picture"] {
+  --game-accent: #137e86;
+  --game-wash: #e8f7f5;
+}
+[data-template="odd-one-out"] {
+  --game-accent: #8557b8;
+  --game-wash: #f2ebfa;
+}
+[data-template="mystery-box"] {
+  --game-accent: #5550b0;
+  --game-wash: #efedfc;
+}
+[data-template="brain-battle"] {
+  --game-accent: #bd5c46;
+  --game-wash: #fff0e9;
+}
+.topic-card {
+  overflow: hidden;
+  display: block;
+}
+.topic-card .tag {
+  margin-top: 12px;
+}
+.hero-art--illustrated {
+  padding: 0;
+  transform: none;
+  border: 1px solid #e8e4ef;
+  overflow: hidden;
+  background: #fffaf3;
+  box-shadow: 0 22px 55px #3c3c6517;
+}
+.hero-art--illustrated .game-artwork {
+  border-radius: 0;
+}
+.hero-art-caption {
+  display: grid;
+  gap: 10px;
+  padding: 22px 28px 28px;
+  background: #fffaf5;
+}
+.hero-art-caption strong {
+  font-size: 24px;
+  line-height: 1.3;
+}
+.hero-art-caption > span:last-child {
+  font-size: 14px;
+  color: #65748b;
+}
+.game-preview-art {
+  max-width: 900px;
+  align-self: start;
+  width: 100%;
+  border: 1px solid #ebe7e3;
+  box-shadow: 0 14px 35px #263c7110;
+}
+.game-preview-art img {
+  max-height: 390px;
+  object-fit: contain;
+  background: #fff9f0;
+}
+.game-session .card:has(.question),
+.game-session .card:has(> .eyebrow) {
+  border-top: 5px solid var(--game-accent, #5367dd);
+}
+.game-session .tag {
+  background: var(--game-wash, #edf0ff);
+  color: var(--game-accent, #4257a5);
+}
+.session-lobby {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fff, var(--game-wash, #f5f3ff));
+}
+.lobby-art {
+  min-width: 0;
+}
+.lobby-details {
+  min-width: 0;
+}
+.lobby-details p {
+  margin: 12px 0;
+}
+.lobby-details img {
+  border-radius: 12px;
+  box-shadow: 0 5px 18px #17284215;
+}
+.results-art {
+  width: 240px;
+  max-width: 100%;
+  justify-self: center;
+}
+.results-card > h2 {
+  text-align: center;
+}
+.admin-game-art {
+  width: 100px;
+  flex: 0 0 100px;
+  border-radius: 12px;
+}
+.question-image {
+  width: auto;
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 16px;
+  background: #fcf8f1;
+}
+.display .question-image {
+  max-height: 360px;
+}
+@media (max-width: 750px) {
+  .game-card .game-artwork,
+  .topic-card .game-artwork {
+    margin: -20px -20px 4px;
+  }
+  .hero-art-caption {
+    padding: 18px 22px 24px;
+  }
+  .hero-art-caption strong {
+    font-size: 21px;
+  }
+  .game-preview-art img {
+    max-height: 280px;
+  }
+  .session-lobby {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .lobby-art img {
+    max-height: 220px;
+    object-fit: cover;
+  }
+  .lobby-details {
+    text-align: center;
+  }
+  .lobby-details img {
+    margin: auto;
+  }
+  .game-session .question-image {
+    max-height: 220px;
+  }
+  .admin-game-art {
+    width: 74px;
+    flex-basis: 74px;
+  }
+}

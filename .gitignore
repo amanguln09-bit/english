@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.local/
+.env*
+!.env.example
+test-results/
+playwright-report/
+*.tsbuildinfo
+
+.wrangler/

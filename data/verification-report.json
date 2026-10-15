@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-15",
+  "sha256": "ac10d420063528f29e1e110779f3424d8c5866fd671631fa175e2e5d05327f3b",
+  "sourceCount": 1,
+  "objectives": 0,
+  "byGrade": [
+    {
+      "grade": 6,
+      "count": 0
+    },
+    {
+      "grade": 7,
+      "count": 0
+    },
+    {
+      "grade": 8,
+      "count": 0
+    }
+  ],
+  "complete": false,
+  "reason": "Official inventory and textbook verification outstanding"
+}

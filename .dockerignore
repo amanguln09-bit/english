@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env*
+.local
+.wrangler
+cloudflare/.local
+test-results
+playwright-report
